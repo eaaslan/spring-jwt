@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -21,21 +23,35 @@ public class JwtService
     public static final String SECRET_KEY ="HomLB/DrAXI5CIV6KrGegB6gHJA8+SRDLF4enHQ5r2I=";
 
     public String generateToken(UserDetails userDetails){
-       return Jwts.builder()
+        Map<String,Object> claimsMap=new HashMap<>();
+         claimsMap.put("role","ADMIN");
+        return Jwts.builder()
                 .setSubject(userDetails.getUsername())
+                .addClaims(claimsMap)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2))
-                .signWith(getKey(), SignatureAlgorithm.ES256)
-               .compact();
+                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .compact();
 
     }
 
-    public <T> T parseToken(String token, Function<Claims, T> claimsResolver){
-
-        return  claimsResolver.apply(Jwts.parserBuilder()
+    public Claims getClaimsFromToken(String token){
+        Claims claims= Jwts.parserBuilder()
                 .setSigningKey(getKey())
                 .build()
-                .parseClaimsJws(token).getBody());
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims;
+    }
+
+    public Object getClaimsByKey(String token, String key){
+        Claims claims= getClaimsFromToken(token);
+        return claims.get(key);
+    }
+
+    public <T> T parseToken(String token, Function<Claims, T> claimsResolver){
+        return claimsResolver.apply(getClaimsFromToken(token));
 
     }
 
