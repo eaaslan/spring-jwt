@@ -27,7 +27,7 @@ public class RefreshTokenService
     public RefreshToken generateRefreshToken(User user) {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setRefreshToken(UUID.randomUUID().toString());
-        refreshToken.setExpiryDate(new java.util.Date(System.currentTimeMillis() + 1000 * 60 * 60 * 4)); // 1 day expiry
+        refreshToken.setExpiryDate(new java.util.Date(System.currentTimeMillis() + 1000 * 20)); // 1 day expiry
         refreshToken.setUser(user);
         return refreshToken;
     }
@@ -40,6 +40,7 @@ public class RefreshTokenService
 
         String refreshToken = refreshTokenRequest.refreshToken();
         Optional<RefreshToken> token = refreshTokenRepository.findByRefreshToken(refreshToken);
+
         if (token.isPresent()) {
             RefreshToken refreshTokenEntity = token.get();
             if (isTokenExpired(refreshTokenEntity)) {

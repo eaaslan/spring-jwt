@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     public static final String AUTHENTICATE = "/authenticate";
     public static final String REGISTER = "/register";
+    public static final String REFRESH_TOKEN = "/refresh-token";
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -29,14 +30,12 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.authEntryPoint = authEntryPoint;}
 
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(authEntryPoint))
                 .authorizeHttpRequests(request->
-                        request.requestMatchers(AUTHENTICATE , REGISTER )
+                        request.requestMatchers(AUTHENTICATE , REGISTER,REFRESH_TOKEN )
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())

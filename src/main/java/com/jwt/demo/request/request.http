@@ -15,3 +15,16 @@ Content-Type: application/json
   "password": "password123"
 }
 
+###
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlciIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc0MjI3NTA2MiwiZXhwIjoxNzQyMjc1MDcyfQ.nIh_VE_aWzQzqSfj_qjtJY_t6Wa1kmyiyNffIO4SPfs
+
+GET http://localhost:8080/employee/1
+Authorization: Bearer {{token}}
+###
+
+POST http://localhost:8080/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "069af944-9257-4def-849c-f1d61d8655a9"
+}
